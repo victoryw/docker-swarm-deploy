@@ -1,8 +1,13 @@
 version: "3.7"
 services:
   webapp:
-    image: tianyawy/spring-health-check:1.0
+    image: tianyawy/spring-health-check:1.1
+    volumes:
+      - ~/log:/var/log/
     deploy:
+      placement:
+        preferences:
+          - spread: node.labels.zone
       replicas: 3
       update_config:
         order: start-first
