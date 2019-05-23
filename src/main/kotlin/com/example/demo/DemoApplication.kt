@@ -16,23 +16,26 @@ import java.io.File
 class DemoApplication
 
 fun main(args: Array<String>) {
-	runApplication<DemoApplication>(*args)
+    runApplication<DemoApplication>(*args)
 }
 
 @Configuration
 class SimpleRoute {
-	@Bean
-	fun route(): RouterFunction<ServerResponse> {
-		return router {
-			GET("/route") { _ -> mono() }
-		}
-	}
+    @Bean
+    fun route(): RouterFunction<ServerResponse> {
+        return router {
+            GET("/route") { _ -> mono() }
+        }
+    }
 
-	private fun mono(): Mono<ServerResponse> {
-		if(File("/var/log/1.log").exists()) {
-			return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).render("")
-		}
+    private fun mono(): Mono<ServerResponse> {
+        val env = System.getenv()
 
-		return ServerResponse.ok().body(fromObject(arrayOf(1, 2, 3, 4)))
-	}
+        val value = env!!["secret"]
+        return when (value) {
+            null ->
+                ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+            else -> ServerResponse.ok().body(fromObject(value))
+        }
+    }
 }
