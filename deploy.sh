@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-dockerComposeVersion=$1
 dockerComposeImage="tianyawy/docker-secret:$1"
 stackName=deploy-test
 serviceName="${stackName}_webapp"
@@ -10,7 +9,7 @@ totalWaitTimes=30
 
 docker run -v $PWD/env:/export $dockerComposeImage
 cd $PWD/env
-echo `current work dir is $PWD`
+echo $PWD
 
 sf=`docker service ls | grep $serviceName || echo ''`
 echo "docker service is in status $sf"
@@ -57,9 +56,11 @@ else
     fi
     loopTimes=loopTimes+1
 
-    createdReplicas=`docker service ls | grep $serviceName | awk '{print $4;}' | awk -F'/' '{print $1}'`
-    echo "replicas just created $createdReplicas"
-    if [ $createdReplicas = "3" ]
+    replicasInfo=`docker service ls | grep $serviceName | awk '{print $4;}'`
+    createdReplicas=`echo $replicasInfo | awk -F'/' '{print $1}'`
+    totalReplicas=`echo $replicasInfo | awk -F'/' '{print $2}'`
+    echo "replicas just created $createdReplicas, total is $totalReplicas"
+    if [ $createdReplicas = $totalReplicas ]
     then
       break;
     else
