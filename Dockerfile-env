@@ -1,0 +1,8 @@
+FROM busybox
+ARG IMAGEVERSION
+RUN mkdir /bak
+RUN mkdir /export
+COPY docker-compose.template.yml /bak/docker-compose.yml
+RUN sed -i "s/#tag#/${IMAGEVERSION}/g" /bak/docker-compose.yml
+
+CMD ["cp","/bak/docker-compose.yml", "/export/docker-compose.yml"]
