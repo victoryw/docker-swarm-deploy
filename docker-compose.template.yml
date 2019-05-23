@@ -2,8 +2,6 @@ version: "3.7"
 services:
   webapp:
     image: tianyawy/spring-health-check:#tag#
-    volumes:
-      - ~/log:/var/log/
     deploy:
       placement:
         preferences:
@@ -11,8 +9,10 @@ services:
       replicas: 3
       update_config:
         order: start-first
-        delay: 300s
-        parallelism: 2
+        delay: 120s
+        parallelism: 3
+        failure_action: rollback
+        monitor: 10s
       restart_policy:
         delay: 5s
         max_attempts: 3

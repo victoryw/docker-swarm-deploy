@@ -24,18 +24,7 @@ class SimpleRoute {
     @Bean
     fun route(): RouterFunction<ServerResponse> {
         return router {
-            GET("/route") { _ -> mono() }
-        }
-    }
-
-    private fun mono(): Mono<ServerResponse> {
-        val env = System.getenv()
-
-        val value = env!!["secret"]
-        return when (value) {
-            null ->
-                ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
-            else -> ServerResponse.ok().body(fromObject(value))
+            GET("/route") { _ -> ServerResponse.ok().body(fromObject("1")) }
         }
     }
 }
