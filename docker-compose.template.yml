@@ -2,6 +2,8 @@ version: "3.7"
 services:
   webapp:
     image: tianyawy/spring-health-check:#tag#
+    volumes:
+      - service-volume:/log/
     deploy:
       placement:
         preferences:
@@ -12,18 +14,19 @@ services:
         delay: 120s
         parallelism: 3
         failure_action: rollback
-        monitor: 10s
+        monitor: 400s
       restart_policy:
         delay: 5s
-        max_attempts: 3
+        max_attempts: 1
         window: 120s
       rollback_config:
         order: start-first
     ports:
       - "8082:8080"
     healthcheck:
-      test: wget --quiet --tries=1 --spider http://localhost:8080/route || exit 1
-      start_period: 40s
+      test: wget --quiet --tries=1 http://localhost:8080/route || exit 1
+      start_period: 300s
+      retries: 1
 #      start_period: 20s
-
-
+volumes:
+  service-volume:

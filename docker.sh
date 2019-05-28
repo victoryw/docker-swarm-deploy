@@ -1,4 +1,5 @@
-
+#!/usr/bin/env bash
+set -e
 gradle build
 
 docker build -t spring-health-check .
