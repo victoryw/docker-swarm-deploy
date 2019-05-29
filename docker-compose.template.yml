@@ -3,7 +3,7 @@ services:
   webapp:
     image: tianyawy/spring-health-check:#tag#
     volumes:
-      - service-volume:/log/
+      - service-volume:/application-log/
     deploy:
       placement:
         preferences:
