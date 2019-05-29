@@ -2,8 +2,6 @@ version: "3.7"
 services:
   webapp:
     image: tianyawy/spring-health-check:#tag#
-    volumes:
-      - service-volume:/application-log/
     deploy:
       placement:
         preferences:
@@ -14,19 +12,27 @@ services:
         delay: 120s
         parallelism: 3
         failure_action: rollback
-        monitor: 400s
+        monitor: 20s
       restart_policy:
         delay: 5s
         max_attempts: 1
         window: 120s
       rollback_config:
         order: start-first
+    networks:
+      - mynet1
     ports:
-      - "8082:8080"
+      - "8080:8080"
     healthcheck:
-      test: wget --quiet --tries=1 http://localhost:8080/route || exit 1
-      start_period: 300s
+      test: wget --quiet --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+      start_period: 10s
       retries: 1
 #      start_period: 20s
+
+networks:
+  mynet1:
+    driver: overlay
+    attachable: true
+
 volumes:
   service-volume:
